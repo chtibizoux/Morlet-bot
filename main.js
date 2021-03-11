@@ -35,7 +35,7 @@ bot.on('ready', () => {
 bot.on("message", (message) => {
     if (message.content.startsWith(")")) {
         if (message.content.startsWith(")help")) {
-            message.channel.send("`)calculator` Aide de la calculatrice\n`)aide MonProblème` Affiche une aide\n`)training MonExo` Affiche un Exercice de maths\n`)table f 0 10 1` Affiche le tableau de la fonction `f(x)` avec x de 0 à 10 et un pas de 1\n`)graph f g` Trace le graphique des fonctions `f` et `g`\n`)functions` Affiche toutes les fonctions\n`)bougeard note1 coef1 note2 coef2 ...` Calculateur de note specifique a mr bougeard");
+            message.channel.send("`)calculator` Aide de la calculatrice\n`)aide MonProblème` Affiche une aide\n`)training MonExo` Affiche un Exercice de maths\n`)table f 0 10 1` Affiche le tableau de la fonction `f(x)` avec x de 0 à 10 et un pas de 1\n`)graph f g` Trace le graphique des fonctions `f` et `g`\n`)functions` Affiche toutes les fonctions");
         }else if (message.content.startsWith(")calculator")) {
             message.channel.send("__**Opérations Basiques:**__\n`+`: Additionner\n`-`: Soustraire\n`/`: Diviser\n`*`: Multiplier\n`**`: Puissance\n`()`: Les Parenthèses marchent");
             message.channel.send("__**Trigonométrie:**__\n`cosd()`: Retourne le cosinus d'un nombre.(Degrées)\n`acosd()`: Retourne l'arc cosinus d'un nombre.(Degrées)\n`sind()`: Retourne le sinus d'un nombre.(Degrées)\n`asind()`: Retourne l'arc sinus d'un nombre.(Degrées)\n`tand()`: Retourne la tangente d'un nombre.(Degrées)\n`atand()`: Retourne l'arc tangente d'un nombre.(Degrées)\n`cos(x)`: Retourne le cosinus d'un nombre.(Radians)\n`acos(x)`: Retourne l'arc cosinus d'un nombre.(Radians)\n`cosh(x)`: Renvoie le cosinus hyperbolique d'un nombre.(Radians)\n`acosh(x)`: Retourne l'arc cosinus hyperbolique d'un nombre.(Radians)\n`sin(x)`: Retourne le sinus d'un nombre.(Radians)\n`asin(x)`: Retourne l'arc sinus d'un nombre.(Radians)\n`sinh(x)`: Retourne le sinus hyperbolique d'un nombre.(Radians)\n`asinh(x)`: Retourne l'arc sinus hyperbolique d'un nombre.(Radians)\n`tan(x)`: Retourne la tangente d'un nombre.(Radians)\n`atan(x)`: Retourne l'arc tangente d'un nombre.(Radians)\n`tanh(x)`: Retourne la tangente hyperbolique d'un nombre(Radians)\n`atanh(x)`: Retourne l'arc tangente hyperbolique d'un nombre.(Radians)");
@@ -68,8 +68,6 @@ bot.on("message", (message) => {
             insulteInterval = setInterval(function () {
                 message.channel.send(insultes[Math.floor(Math.random() * insultes.length)]);
             }, 5000);
-        }else if (message.content.startsWith(")spam")) {
-            message.channel.send("################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################");
         }else if (message.content.startsWith(")stop")) {
             clearInterval(insulteInterval);
         }else {
@@ -154,30 +152,6 @@ function training(message) {
         });
         message.channel.send(urls[0]);
     });
-}
-
-function bougeard(message) {
-    var ns = [], cs = [], t = 0, d = 0;
-    var all = message.content.slice(10).split(" ");
-    for (var i = 0; i < all.length; i++) {
-        if (!Number.isInteger(all[i])) {
-            return;
-        }
-        if (Math.round(i/2) === i/2) {
-            ns.push(parseInt(all[i]));
-        }else {
-            cs.push(parseInt(all[i]));
-        }
-    }
-    if (cs.length === ns.length) {
-        for (var i = 0; i < ns.length; i++) {
-            t += ns[i]*cs[i];
-        }
-        for (var i = 0; i < cs.length; i++) {
-            d += cs[i];
-        }
-        message.channel.send("Tu as " + (Math.round((t / d) * (20 / 3) * 100) / 100) + "/20");
-    }
 }
 
 var cosd = (degrees) => Math.cos(degrees * Math.PI / 180);
