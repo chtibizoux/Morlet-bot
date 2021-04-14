@@ -492,7 +492,26 @@ function table(message) {
         }
     }
 }
-
+function myeval(goodMessage) {
+    try {
+        with (Math){
+            "use strict";
+            var result = eval(goodMessage);
+            if (isNaN(result)) {
+                result = "Ce n'est pas un nombre, en programmation: NaN";
+            }else if (result === Infinity) {
+                result = "L'infinit: ∞, en programmation: Infinity";
+            }else if (result === -Infinity) {
+                result = "Moins l'infinit: -∞, en programmation: -Infinity";
+            }else if (result === false) {
+                result = "Faux, en programmation: false";
+            }else if (result === true) {
+                result = "Vrai, en programmation: true";
+            }
+            message.channel.send(result);
+        }
+    } catch (e) {}
+}
 function calculator(message) {
     var goodMessage = message.content.split(" ").join("").split(",").join(".").split("=").join("==").split(")(").join(")*(");
     // easter eggs
@@ -502,24 +521,7 @@ function calculator(message) {
     }else {
         // Calculator
         if (goodMessage !== "" && !goodMessage.includes("console") && !goodMessage.includes("bot") && !goodMessage.includes("token") && !goodMessage.includes("message") && !goodMessage.includes("discord") && !goodMessage.includes("cheerio") && !goodMessage.includes("fs") && !goodMessage.includes("request")) {
-            try {
-                with (Math){
-                    "use strict";
-                    var result = eval(goodMessage);
-                    if (isNaN(result)) {
-                        result = "Ce n'est pas un nombre, en programmation: NaN";
-                    }else if (result === Infinity) {
-                        result = "L'infinit: ∞, en programmation: Infinity";
-                    }else if (result === -Infinity) {
-                        result = "Moins l'infinit: -∞, en programmation: -Infinity";
-                    }else if (result === false) {
-                        result = "Faux, en programmation: false";
-                    }else if (result === true) {
-                        result = "Vrai, en programmation: true";
-                    }
-                    message.channel.send(result);
-                }
-            } catch (e) {}
+            myeval(goodMessage);
             // Fonctions
             if ((/^[a-z]\([a-z]\)\=\=/).test(goodMessage)) {
                 var mathFunction = goodMessage.slice(0, 1);
