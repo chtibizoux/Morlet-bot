@@ -472,16 +472,14 @@ function table(message) {
                 with (Math){
                     "use strict";
                     var result = eval(functions[mathFunction].split("x").join("(" + i + ")"));
-                    if (isNaN(result)) {
-                        result = "Ce n'est pas un nombre, en programmation: NaN";
-                    }else if (result === Infinity) {
-                        result = "L'infinit: ∞, en programmation: Infinity";
+                    if (result === Infinity) {
+                        result = "L'infinit: ∞";
                     }else if (result === -Infinity) {
-                        result = "Moins l'infinit: -∞, en programmation: -Infinity";
+                        result = "Moins l'infinit: -∞";
                     }else if (result === false) {
-                        result = "Faux, en programmation: false";
+                        result = "Faux";
                     }else if (result === true) {
-                        result = "Vrai, en programmation: true";
+                        result = "Vrai";
                     }
                     messageToSend += i + " : " + result + "\n";
                 }
@@ -502,23 +500,23 @@ function calculator(message) {
         message.channel.send("42");
     }else {
         // Calculator
-        if (goodMessage !== "" && !goodMessage.includes("console") && !goodMessage.includes("bot") && !goodMessage.includes("token") && !goodMessage.includes("message") && !goodMessage.includes("discord") && !goodMessage.includes("cheerio") && !goodMessage.includes("fs") && !goodMessage.includes("request")) {
-        try {
-            with (Math){
-                "use strict";
-                var result = eval(goodMessage);
-                if (result === Infinity) {
-                    result = "L'infinit: ∞";
-                }else if (result === -Infinity) {
-                    result = "Moins l'infinit: -∞";
-                }else if (result === false) {
-                    result = "Faux";
-                }else if (result === true) {
-                    result = "Vrai";
+        if (goodMessage !== "" && !goodMessage.includes("console") && !goodMessage.includes("bot") && !goodMessage.includes("config") && !goodMessage.includes("message") && !goodMessage.includes("discord") && !goodMessage.includes("cheerio") && !goodMessage.includes("fs") && !goodMessage.includes("request")) {
+            try {
+                with (Math){
+                    "use strict";
+                    var result = eval(goodMessage);
+                    if (result === Infinity) {
+                        result = "L'infinit: ∞";
+                    }else if (result === -Infinity) {
+                        result = "Moins l'infinit: -∞";
+                    }else if (result === false) {
+                        result = "Faux";
+                    }else if (result === true) {
+                        result = "Vrai";
+                    }
+                    message.channel.send(result);
                 }
-                message.channel.send(result);
-            }
-        } catch (e) {}
+            } catch (e) {}
             // Fonctions
             if ((/^[a-z]\([a-z]\)\=\=/).test(goodMessage)) {
                 var mathFunction = goodMessage.slice(0, 1);
@@ -549,16 +547,14 @@ function calculator(message) {
                     with (Math){
                         "use strict";
                         var result = eval(functions[mathFunction].split("x").join("(" + number + ")"));
-                        if (isNaN(result)) {
-                            result = "Ce n'est pas un nombre, en programmation: NaN";
-                        }else if (result === Infinity) {
-                            result = "L'infinit: ∞, en programmation: Infinity";
+                        if (result === Infinity) {
+                            result = "L'infinit: ∞";
                         }else if (result === -Infinity) {
-                            result = "Moins l'infinit: -∞, en programmation: -Infinity";
+                            result = "Moins l'infinit: -∞";
                         }else if (result === false) {
-                            result = "Faux, en programmation: false";
+                            result = "Faux";
                         }else if (result === true) {
-                            result = "Vrai, en programmation: true";
+                            result = "Vrai";
                         }
                         message.channel.send(result);
                     }
@@ -567,14 +563,16 @@ function calculator(message) {
                 // Equations
                 if (goodMessage.includes("==")) {
                     try {
+                        // Extract all letters
                         var letters = goodMessage.replace(/[0-9=+-\/()*]/g, "").split("");
                         for (var i = 0; i < letters.length; i++) {
                             if (letters.includes(letters[i], (i + 1))) {
                                 letters.splice(i, 1);
                             }
                         }
+                        // Replace 4x by 4 * x and 4(x + 2) by 4 * (x + 2)
                         for (var y = 0; y < letters.length; y++) {
-                            var splitedMessage = goodMessage.split("**").join("^").split(letters[y]);
+                            var splitedMessage = goodMessage.split("**").join("^").split("==").join("=").split(letters[y]);
                             for (var i = 0; i < splitedMessage.length - 1; i++) {
                                 if ((/[0-9]/).test(splitedMessage[i].slice(-1))) {
                                     splitedMessage[i] += "*";
@@ -587,27 +585,27 @@ function calculator(message) {
                             }
                             goodMessage = splitedMessage.join(letters[y]);
                         }
-                        var start = goodMessage.slice(0, goodMessage.indexOf("=="));
-                        var end = goodMessage.slice(goodMessage.indexOf("==") + 2, goodMessage.length);
-                        var eq = new algebra.Equation(algebra.parse(start), algebra.parse(end));
-                        var messageToSend = "__**Solutions:**__\n```";
-                        for (var i = 0; i < letters.length; i++) {
-                            var answer = eq.solveFor(letters[i]);
-                            if (answer.toString() !== "") {
-                                if (answer.toString().includes(",")) {
-                                    var answers = answer.toString().split(",");
-                                    for (var y = 0; y < answers.length; y++) {
-                                        messageToSend += letters[i] + (y + 1) + " = " + answers[y] + "\n";
+                        var eq = algebra.parse(goodMessage);
+                        if (letters.length > 0) {
+                            var messageToSend = "__**Solutions:**__\n```";
+                            for (var i = 0; i < letters.length; i++) {
+                                var answer = eq.solveFor(letters[i]);
+                                if (answer.toString() !== "") {
+                                    if (answer.toString().includes(",")) {
+                                        var answers = answer.toString().split(",");
+                                        for (var y = 0; y < answers.length; y++) {
+                                            messageToSend += letters[i] + (y + 1) + " = " + answers[y] + "\n";
+                                        }
+                                    }else {
+                                        messageToSend += letters[i] + " = " + answer.toString() + "\n";
                                     }
                                 }else {
-                                    messageToSend += letters[i] + " = " + answer.toString() + "\n";
+                                    messageToSend += "Il n'y a pas de solution pour" + letters[i];
                                 }
-                            }else {
-                                messageToSend += "Il n'y a pas de solution pour" + letters[i];
                             }
+                            messageToSend += "\n```";
+                            message.channel.send(messageToSend);
                         }
-                        messageToSend += "\n```";
-                        message.channel.send(messageToSend);
                     } catch (e) {}
                 }
             }
