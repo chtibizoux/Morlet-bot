@@ -48,6 +48,7 @@ bot.on("message", (message) => {
         }else if (message.content.startsWith(")table ")) {
             table(message);
         }else if (message.content.startsWith(")graph ")) {
+            activeMessage = null;
             graphX = 0;
             y = 0;
             zoom = 1;
@@ -352,13 +353,21 @@ function graph(message, rectionX = 0, rectionY = 0, rectionZoom = 0) {
         }
     }
 
-	const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'graph.png');
-    message.channel.send("", attachment).then((sent) => {
-        if (activeMessage !== null) {
-            activeMessage.delete();
-        }
+	// const attachment = new discord.MessageAttachment(canvas.toBuffer(), 'graph.png');
+    // message.channel.send("", attachment).then((sent) => {
+    //     if (activeMessage !== null) {
+    //         activeMessage.delete();
+    //     }
+    //     activeMessage = sent;
+    // });
+    const buffer = canvas.toBuffer('image/png');
+    fs.writeFileSync('./images/graph.png', buffer);
+    message.channel.send("https://clementsongis.cf/graph.png").then((sent) => {
         activeMessage = sent;
     });
+    if (activeMessage) {
+        activeMessage.edit("https://clementsongis.cf/graph.png");
+    }
 }
 function colorByLetter(letter) {
     switch (letter) {
