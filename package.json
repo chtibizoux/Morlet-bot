@@ -6,11 +6,11 @@
   "author": "Clément Songis",
   "license": "ISC",
   "dependencies": {
-    "algebra.js": "^0.2.6",
-    "canvas": "^2.6.1",
+    "canvas": "^2.7.0",
     "cheerio": "^1.0.0-rc.3",
     "discord": "^0.8.2",
-    "discord.js": "^12.1.1",
+    "discord.js": "^12.5.3",
+    "nerdamer": "^1.1.11",
     "request": "^2.88.2"
   }
 }

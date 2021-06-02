@@ -3,8 +3,12 @@ const cheerio = require('cheerio');
 const request = require('request');
 const discord = require("discord.js");
 const { createCanvas, loadImage } = require('canvas');
-const algebra = require('algebra.js');
 
+var nerdamer = require('nerdamer');
+require('nerdamer/Algebra');
+require('nerdamer/Calculus');
+require('nerdamer/Solve');
+require('nerdamer/Extra');
 const bot = new discord.Client();
 if (!fs.existsSync("config.json")) {
     console.error("Please create config.json file config.json.exemple is an exemple");
@@ -353,21 +357,21 @@ function graph(message, rectionX = 0, rectionY = 0, rectionZoom = 0) {
         }
     }
 
-	// const attachment = new discord.MessageAttachment(canvas.toBuffer(), 'graph.png');
-    // message.channel.send("", attachment).then((sent) => {
-    //     if (activeMessage !== null) {
-    //         activeMessage.delete();
-    //     }
-    //     activeMessage = sent;
-    // });
-    const buffer = canvas.toBuffer('image/png');
-    fs.writeFileSync('./images/graph.png', buffer);
-    message.channel.send("https://clementsongis.cf/graph.png").then((sent) => {
+	const attachment = new discord.MessageAttachment(canvas.toBuffer(), 'graph.png');
+    message.channel.send("", attachment).then((sent) => {
+        if (activeMessage !== null) {
+            activeMessage.delete();
+        }
         activeMessage = sent;
     });
-    if (activeMessage) {
-        activeMessage.edit("https://clementsongis.cf/graph.png");
-    }
+    // const buffer = canvas.toBuffer('image/png');
+    // fs.writeFileSync('./images/graph.png', buffer);
+    // message.channel.send("https://clementsongis.cf/graph.png").then((sent) => {
+    //     activeMessage = sent;
+    // });
+    // if (activeMessage) {
+    //     activeMessage.edit("https://clementsongis.cf/graph.png");
+    // }
 }
 function colorByLetter(letter) {
     switch (letter) {
@@ -453,7 +457,6 @@ function colorByLetter(letter) {
             return "#ff0000";
     }
 }
-
 function fun(message) {
     if (Object.keys(functions).length > 0) {
         var messageToSend = "__**Fonctions:**__\n```";
@@ -522,7 +525,9 @@ function calculator(message) {
                     }else if (result === true) {
                         result = "Vrai";
                     }
-                    message.channel.send(result);
+                    if (result != goodMessage) {
+                        message.channel.send(result);
+                    }
                 }
             } catch (e) {}
             // Fonctions
@@ -576,11 +581,9 @@ function calculator(message) {
                     try {
                         // Extract all letters
                         var letters = goodMessage.replace(/[0-9=+-\/()*]/g, "").split("");
-                        for (var i = 0; i < letters.length; i++) {
-                            if (letters.includes(letters[i], (i + 1))) {
-                                letters.splice(i, 1);
-                            }
-                        }
+                        letters = letters.filter(function (item, pos) {
+                            return letters.indexOf(item) == pos;
+                        });
                         // Replace 4x by 4 * x and 4(x + 2) by 4 * (x + 2)
                         for (var y = 0; y < letters.length; y++) {
                             var splitedMessage = goodMessage.split("**").join("^").split("==").join("=").split(letters[y]);
@@ -599,28 +602,29 @@ function calculator(message) {
                             }
                             goodMessage = splitedMessage.join(letters[y]);
                         }
-                        var eq = algebra.parse(goodMessage);
                         if (letters.length > 0) {
                             var messageToSend = "__**Solutions:**__\n```";
                             for (var i = 0; i < letters.length; i++) {
-                                var answer = eq.solveFor(letters[i]);
-                                if (answer.toString() !== "") {
-                                    if (answer.toString().includes(",")) {
-                                        var answers = answer.toString().split(",");
+                                console.log(nerdamer.solve(goodMessage, letters[i]).symbol.elements);
+                                var answer = nerdamer.solve(goodMessage, letters[i]).toString().replace("[", "").replace("]", "");
+                                if (answer !== "") {
+                                    if (answer.includes(",")) {
+                                        var answers = answer.split(",");
                                         for (var y = 0; y < answers.length; y++) {
                                             messageToSend += letters[i] + (y + 1) + " = " + answers[y] + "\n";
                                         }
                                     }else {
-                                        messageToSend += letters[i] + " = " + answer.toString() + "\n";
+                                        messageToSend += letters[i] + " = " + answer + "\n";
                                     }
                                 }else {
-                                    messageToSend += "Il n'y a pas de solution pour" + letters[i];
+                                    messageToSend += "Il n'y a pas de solution pour \"" + letters[i] + "\"\n";
                                 }
                             }
                             messageToSend += "\n```";
                             message.channel.send(messageToSend);
                         }
-                    } catch (e) {}
+                    } catch (e) {
+                    }
                 }
             }
         }
