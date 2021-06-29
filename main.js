@@ -187,9 +187,9 @@ var factorial = (number) => {
 function graph(message, rectionX = 0, rectionY = 0, rectionZoom = 0) {
     graphX += rectionX * pixelByLine;
     graphY += rectionY * pixelByLine;
-    if (rectionZoom == 1) {
+    if (rectionZoom === 1) {
         zoom *= 2;
-    } else {
+    } else if (rectionZoom === -1) {
         zoom /= 2;
     }
     var canvas = createCanvas(960, 540);
